@@ -1,0 +1,79 @@
+version: 1.4.0
+x509:
+  subject:
+    # The DN of the CA
+    country: US
+    state: "New York"
+    locality: "New York"
+    organization: Org1
+    organizationalunit: Fabric
+
+ca:
+  name: ca.org1.example.com
+  # Max Enrollment Period (in seconds)
+  # Default: 31536000 (1 year)
+  # The value of 0 represents an unlimited enrollment period.
+  maxenrollments: 0
+  # The CA server listens on all network interfaces by default.
+  # Use listenAddress to specify a specific network interface to listen on.
+  # Default: "0.0.0.0:7054"
+  listenAddress: 0.0.0.0:7054
+  # The CA's signing algorithm.
+  # Choices: ["ecdsa", "ecdsa-sm2", "ed25519", "rsa", "gmsm2"]
+  # Default: "ecdsa"
+  signing:
+    default:
+      usage: digital signature
+      expiry: 876000h # 100 years
+  # The fabric-ca-server database (sqlite3) file.
+  # Default: "fabric-ca-server.db"
+  database:
+    type: sqlite3
+    datasource: fabric-ca-server.db
+  # The TLS configuration for the CA server.
+  tls:
+    # Enable TLS on the CA server.
+    # Default: false
+    enabled: true
+    # TLS CA certificate and key files.
+    # Replace "ca-cert.pem" and "ca-key.pem" with your TLS CA files.
+    ca:
+      # Default: "ca-cert.pem"
+      certfile: /path/to/ca-cert.pem
+      # Default: "ca-key.pem"
+      keyfile: /path/to/ca-key.pem
+    # The TLS client authentication configuration.
+    clientauth:
+      # Default: "noclientcert"
+      type: noclientcert
+    # The client root certificate file used by the CA server to verify client certificates.
+    # Replace "ca-cert.pem" with your client root certificate file.
+    clientrootcas:
+      # Default: "ca-cert.pem"
+      certfiles:
+        - /path/to/client-root-ca-cert.pem
+  # LDAP configuration for identity lookup.
+  ldap:
+    # Default: false
+    enabled: false
+    url: ldap://localhost:389
+    userfilter: "(uid=%s)"
+    # The user name attribute (key) in the search filter.
+    # Default: "uid"
+    userattr: uid
+    # The CA uses the attribute to search for certificates.
+    # Default: "certificate"
+    certattr: certificate
+    # The attribute used to find a user's CA.
+    # Default: "ca"
+    ldapca: ca
+    # The attribute used to find a user's affiliation.
+    # Default: "affiliation"
+    affiliationattr: affiliation
+    # The CA creates an account if the user is not found.
+    # Default: true
+    cacreate: true
+    # The CA server's certification of the LDAP server.
+    # Default: ""
+    tls:
+      certfiles:
